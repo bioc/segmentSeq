@@ -82,16 +82,16 @@ function(sDP,
           }
 
         if(verbose) message(".", appendLF = FALSE)
-        
+
         countN <- new("countData",
-                      data = data[,replicates == rep, drop = FALSE],
+                      data = cbind(matrix(0, ncol = sum(replicates == rep), nrow = nrow(data)), data[,replicates == rep, drop = FALSE]),
                       seglens = seglens,
-                      libsizes = sDP@libsizes[replicates == rep],
-                      groups = list(c(rep(1, sum(replicates == rep))), c(rep(1, sum(replicates == rep)))),
+                      libsizes = rep(sDP@libsizes[replicates == rep], 2),
+                      groups = list(c(rep(1, sum(replicates == rep) * 2)), c(rep(1, sum(replicates == rep)), rep(2, sum(replicates == rep)))),
                       priorType = priorType,
-                      priors = list(priors = list(null = list(priors[[rep]]), loc = list(priors[[rep]])), sampled = sDP@priors$sampled))
-        nullLike <- getLikelihoods(countN, prs = c(0.1, 0.9), pET = "none", verbose = FALSE, ..., cl = cl)
-        
+                      priors = list(priors = list(NDE = list(priors[[rep]]), DE = list(priors[[rep]], priors[[rep]])), sampled = sDP@priors$sampled))
+        nullLike <- getLikelihoods(countN, prs = c(0.9, 0.1), pET = "none", verbose = FALSE, cl = cl)
+
         if(verbose) message(".")
 
         if(is.null(cl))

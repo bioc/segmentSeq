@@ -32,7 +32,7 @@
                  
     filLSD <- .filterSegments(selLoci@coordinates, orderOn = ordLSD, decreasing = FALSE)
     filSegs <- selLoci[filLSD, ]
-    filSegs <- filSegs[order(as.character(seqnames(filSegs@coordinates)), start(filSegs@coordinates), end(filSegs@coordinates)),]
+    filSegs <- filSegs[order(as.factor(seqnames(filSegs@coordinates)), start(filSegs@coordinates), end(filSegs@coordinates)),]
 
     message("done!")
     

@@ -6,8 +6,8 @@ heuristicSeg <- function(sD, aD, bimodality = TRUE, RKPM = 300, gap = 100, subRe
      
     fastUniques <- function(x)
       if(nrow(x) > 1) return(c(TRUE, rowSums(x[-1L,, drop = FALSE] == x[-nrow(x),,drop = FALSE]) != ncol(x))) else return(TRUE)
-
-    sD <- sD[order(as.character(seqnames(sD@coordinates)), as.integer(start(sD@coordinates)), as.integer(end(sD@coordinates))),]
+    
+    sD <- sD[order(as.factor(seqnames(sD@coordinates)), as.integer(start(sD@coordinates)), as.integer(end(sD@coordinates))),]
 
     dupStarts <- which(fastUniques(cbind(as.character(seqnames(sD@coordinates)), as.integer(start(sD@coordinates)))))
 

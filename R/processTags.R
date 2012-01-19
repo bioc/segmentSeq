@@ -48,7 +48,7 @@ function(files, dir = ".", replicates, libnames, chrs, chrlens, countID = NULL,
         if(length(polyBaseRemove) > 0) aln <- aln[-polyBaseRemove,]
       }
         if(is.null(countID)) {
-          aln <- aln[order(as.character(seqnames(aln)), as.integer(start(aln)), as.character(values(aln)$tag)),]
+          aln <- aln[order(as.factor(seqnames(aln)), as.integer(start(aln)), as.character(values(aln)$tag)),]
           dupTags <- which(!(as.character(seqnames(aln)) == c(as.character(seqnames(aln))[-1], "!") &
                              start(aln) == c(start(aln)[-1], Inf) &
                              end(aln) == c(end(aln)[-1], Inf) &
@@ -198,7 +198,7 @@ function(files, dir = ".", replicates, libnames, chrs, chrlens,
         } else if(tagPresent) {
           aln <- GRanges(seqnames = filetags[chrtags, chrcol], ir, tag = Rle(filetags[chrtags, tagcol]), count = 1)
           if(strandPresent) strand(aln) <- Rle(as.character(filetags[chrtags,strandcol]))
-          aln <- aln[order(as.character(seqnames(aln)), as.integer(start(aln)), as.character(values(aln)$tag)),]          
+          aln <- aln[order(as.factor(seqnames(aln)), as.integer(start(aln)), as.character(values(aln)$tag)),]          
           dupTags <- which(!(as.character(seqnames(aln)) == c(as.character(seqnames(aln))[-1], "!") &
                              start(aln) == c(start(aln)[-1], Inf) &
                              end(aln) == c(end(aln)[-1], Inf) &

@@ -240,7 +240,7 @@ function(files, dir = ".", replicates, libnames, chrs, chrlens,
             purgeTags <- which(start(chrTag)[ordTag] == c(start(chrTag)[ordTag[-1]], Inf) &
                                end(chrTag)[ordTag] == c(end(chrTag)[ordTag[-1]], Inf) &
                                as.character(strand(chrTag)[ordTag]) == c(as.character(strand(chrTag)[ordTag[-1]]), "!") &
-                               (values(chrTag)$tag[ordTag] == c(values(chrTag)$tag[ordTag[-1]], "!") | is.na(values(chrTag)$tag[ordTag]) == is.na(c(values(chrTag)$tag[ordTag[-1]], NA)))) + 1
+                               (values(chrTag)$tag[ordTag] == c(values(chrTag)$tag[ordTag[-1]], "!") | (is.na(values(chrTag)$tag[ordTag]) & is.na(c(values(chrTag)$tag[ordTag[-1]], NA))))) + 1
             if(length(purgeTags) > 0)
               chrTag <- chrTag[-ordTag[purgeTags],]
             message(".", appendLF = FALSE)        
@@ -261,12 +261,13 @@ function(files, dir = ".", replicates, libnames, chrs, chrlens,
                                   purgeTags <- which(start(chrTag)[ordTag] == c(start(chrTag)[ordTag[-1]], Inf) &
                                                      end(chrTag)[ordTag] == c(end(chrTag)[ordTag[-1]], Inf) &
                                                      as.character(strand(chrTag)[ordTag]) == c(as.character(strand(chrTag)[ordTag[-1]]), "!") &
-                                                     (values(chrTag)$tag[ordTag] == c(values(chrTag)$tag[ordTag[-1]], "!") | is.na(values(chrTag)$tag[ordTag]) == is.na(c(values(chrTag)$tag[ordTag[-1]], NA)))) + 1
-                                  
+                                                     (values(chrTag)$tag[ordTag] == c(values(chrTag)$tag[ordTag[-1]], "!") | (is.na(values(chrTag)$tag[ordTag]) & is.na(c(values(chrTag)$tag[ordTag[-1]], NA))))) + 1
                                   message(".", appendLF = FALSE)
                                   if(length(purgeTags) > 0) return(values(chrTag)$count[ordTag[-purgeTags]]) else return(values(chrTag)$count[ordTag])
-                                }))
-                      }))                      
+                                })
+                                )
+                      })
+                      )                      
 
     colnames(counts) <- libnames
 

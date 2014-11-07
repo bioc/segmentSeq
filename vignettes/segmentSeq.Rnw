@@ -126,7 +126,8 @@ This \verb'lociData' object can now be examined for differential expression with
 Finally, to be a good citizen, we stop the cluster we started earlier:
 
 <<<stopCluster>>=
-stopCluster(cl)
+if(!is.null(cl))
+    stopCluster(cl)
 @
 
 \section*{Session Info}

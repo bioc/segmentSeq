@@ -295,8 +295,8 @@ getCounts <- function(segments, aD, preFiltered = FALSE, adjustMultireads = TRUE
                                  
                                  chralignments <- alignments[whchr,]
 
-                                 if("tags" %in% names(values(chralignments))) {
-                                   if("chunkDup" %in% names(values(chralignments)) & useChunk) {
+                                 if("tag" %in% names(values(chralignments))) {
+                                     if("chunkDup" %in% names(values(chralignments)) & useChunk) {
                                      nondupTags <- ranges(chralignments)[!chralignments$chunkDup,]
                                      nondupData <- intData[!chralignments$chunkDup,, drop = FALSE]
                                    } else {

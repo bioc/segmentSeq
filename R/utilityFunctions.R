@@ -119,7 +119,7 @@ thresholdFinder <- function(method, aM, subset, minprop = 0.05, bootstrap = 100,
   }
 
 .printLocLikes <- function(locLike) {
-  if(class(locLike) == "DataFrame") locLike <- .DF2matrix(locLike)
+  if(is(locLike, "DataFrame")) locLike <- .DF2matrix(locLike)
   
   if(any(exp(locLike) > 1, na.rm = TRUE))
     {

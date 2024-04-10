@@ -146,7 +146,7 @@
     }
                                         # empty regions carry no data    
     
-    if(class(aD) == "alignmentData") {
+    if(inherits(aD, "alignmentData")) {
       nullData <- matrix(0L, nrow = length(nullCoords), ncol = ncol(sDWithin))
       colnames(nullData) <- colnames(sDWithin@data)
       if(nrow(sDWithin@data) > 0) nullData[nullCoords$sDID > 0,] <- sDWithin@data[nullCoords$sDID[nullCoords$sDID > 0],]
@@ -155,7 +155,7 @@
                       libsizes = libsizes(sDWithin),
                       replicates = sDWithin@replicates,
                       coordinates = nullCoords)
-    } else if(class(aD) == "alignmentMeth") {
+    } else if(inherits(aD, "alignmentMeth")) {
       values(nullCoords) <- NULL
       potnullD <- new("lociData",
                       data = list(matrix(NA, ncol = ncol(sDWithin), nrow = length(nullCoords)), 
@@ -215,13 +215,13 @@
     leftChoose <- which(leftGood)[filNulls[filNulls > cumsum(splitNulls)[2] & filNulls <= cumsum(splitNulls)[3]] - cumsum(splitNulls)[2]]
     rightChoose <- which(rightGood)[filNulls[filNulls > cumsum(splitNulls)[3] & filNulls <= cumsum(splitNulls)[4]] - cumsum(splitNulls)[3]]
     
-    if(class(sDWithin) == "segData") {
+    if(inherits(sDWithin, "segData")) {
       colnames(emptyData) <- colnames(sDWithin@data)
       potnullD <- new("segData", data = rbind(emptyData, sDWithin@data[c(lrChoose, leftChoose, rightChoose),]),
                       libsizes = libsizes(sDWithin),
                       replicates = sDWithin@replicates,
                       coordinates = nullCoords[filNulls])
-    } else if(class(sDWithin) == "segMeth") {
+    } else if(inherits(sDWithin, "segMeth")) {
       colnames(emptyData) <- colnames(sDWithin@Cs)
       potnullD <- new("segMeth",
                       Cs = rbind(emptyData, sDWithin@Cs[c(lrChoose, leftChoose, rightChoose),]),

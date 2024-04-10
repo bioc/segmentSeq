@@ -1,7 +1,7 @@
 # modification on git from copied files
 getCounts <- function(segments, aD, preFiltered = FALSE, adjustMultireads = TRUE, useChunk = FALSE, cl = cl)
   {    
-    if(class(aD) == "alignmentData") {
+    if(inherits(aD, "alignmentData")) {
       counts <- matrix(NA, ncol = ncol(aD), nrow = length(segments))
       for(ss in levels(strand(segments)))
         if(any(strand(segments) == ss))
@@ -9,7 +9,7 @@ getCounts <- function(segments, aD, preFiltered = FALSE, adjustMultireads = TRUE
             .getCounts(segments[strand(segments) == ss,],
                        aD = aD[which(strand(aD@alignments) %in% list(c("+", "*"), c("-", "*"), c("+", "-", "*"))[[which(c("+", "-", "*") == ss)]]),],
                        preFiltered = preFiltered, as.matrix = TRUE, useChunk = useChunk, cl = list(NULL, cl)[[as.integer(length(segments) > 1) + 1]])
-    } else if(class(aD) == "alignmentMeth") {
+    } else if(inherits(aD, "alignmentMeth")) {
       Cs <- Ts <- matrix(NA, ncol = ncol(aD), nrow = length(segments))
       for (ss in levels(strand(segments))) {
         if(any(strand(segments) == ss)) {

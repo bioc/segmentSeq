@@ -79,7 +79,7 @@ heuristicSeg <- function(sD, aD, gap = 50, RKPM = 1000, prop, coverage = 1, locC
     } else {
         lD <- .partheuristicSeg(sDP = sD, aDP = aD, bimodality = FALSE, verbose = verbose, cl = cl, RKPM = RKPM, gap = gap, prop = prop, coverage = coverage, locCutoff = locCutoff, nullCutoff = nullCutoff, largeness = largeness, tempDir = tempDir)
     }
-    if(class(aD) == "alignmentMeth")
+    if(inherits(aD, "alignmentMeth"))
         {
             if(trimMeth) lD <- .trimMeth(lD, aD, prop, cl)
             if(nrow(sD@data) == 0) {
@@ -133,7 +133,7 @@ heuristicSeg <- function(sD, aD, gap = 50, RKPM = 1000, prop, coverage = 1, locC
               }
           }
       
-      if(class(aDP) == "alignmentMeth") {
+      if(inherits(aDP, "alignmentMeth")) {
                                         #aDP <- normaliseNC(aDP)
           breaks <- ceiling(prod(dim(sDP)) / largeness)
           if(breaks > 1) splitCalc <- split(1:nrow(sDP), cut(1:nrow(sDP), breaks = breaks, labels = FALSE)) else splitCalc <- list(1:nrow(sDP))        

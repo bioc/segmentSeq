@@ -1,10 +1,10 @@
 # modification on git from copied files
 lociLikelihoods <- function(cD, aD, newCounts = FALSE, bootStraps = 3, inferNulls = TRUE, nasZero = FALSE, usePosteriors = TRUE, tail = 0.1, subset = NULL, cl)
   {
-    if(class(aD) == "alignmentMeth")
+    if(inherits(aD, "alignmentMeth"))
       {
           mD <- .methLikelihoods(cD = cD, aD = aD, newCounts = newCounts, bootStraps = bootStraps, inferNulls = inferNulls, usePosteriors = usePosteriors, tail = tail, subset = subset, cl = cl)
-      } else if(class(aD) == "alignmentData")
+      } else if(inherits(aD, "alignmentData"))
             mD <- .lociLikelihoods(cD = cD, aD = aD, newCounts = newCounts, bootStraps = bootStraps, inferNulls = inferNulls, nasZero = nasZero, usePosteriors = usePosteriors, subset = subset, cl = cl)
     mD
   }

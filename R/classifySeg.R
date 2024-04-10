@@ -102,7 +102,7 @@ classifySeg <- function(sD, cD, aD, lociCutoff = 0.9, nullCutoff = 0.9, subRegio
             nullSegPriors <- cD
             nullSegPriors@locLikelihoods <- matrix(nrow = 0, ncol = 0)
             groups(nullSegPriors) <- list(replicates(nullSegPriors))
-            if(class(nullSegPriors) == "lociData") {
+            if(inherits(nullSegPriors, "lociData")) {
                 nullSegPriors <- getPriors.NB(nullSegPriors, samplesize = samplesize, verbose = FALSE, cl = cl)
             } #else if(class(nullSegPriors) == "methData")
                                         #    nullSegPriors <- getPriors.BB(nullSegPriors, samplesize = samplesize, verbose = FALSE, cl = cl)
@@ -192,9 +192,9 @@ classifySeg <- function(sD, cD, aD, lociCutoff = 0.9, nullCutoff = 0.9, subRegio
           message("done.")
           
           groups(prepD) <- list(prepD@replicates)
-          if(class(aD) == "alignmentData") {
+          if(inherits(aD, "alignmentData")) {
               prepD <- getPriors.NB(prepD, samplesize = samplesize, verbose = TRUE, cl = cl)
-          } else if(class(aD) == "alignmentMeth") {
+          } else if(inherits(aD, "alignmentMeth")) {
               densityFunction(prepD) <- bbDensity
               libsizes(prepD) <- matrix(1, nrow = ncol(prepD), ncol = 2)
               prepD@data <- round(prepD@data)
@@ -278,9 +278,9 @@ classifySeg <- function(sD, cD, aD, lociCutoff = 0.9, nullCutoff = 0.9, subRegio
               
               potnullD@locLikelihoods <- (do.call("cbind", ((lapply(levels(potnullD@replicates), .classifyNulls, lociPD = subSD, potNulls = potnullD, lR = lR, nullPriors = nullPriors, postOver = postOver, nullCutoff = nullCutoff, cl = cl)))))
           } else potnullD <- NULL
-      if(class(aD) == "alignmentData") {
+      if(inherits(aD, "alignmentData")) {
           emptyD <- rowSums(potnullD@data) == 0
-      } else if(class(aD) == "alignmentMeth") {
+      } else if(inherits(aD, "alignmentMeth")) {
           emptyD <- rowSums(potnullD@Cs) == 0
       }
         
@@ -461,11 +461,11 @@ classifySeg <- function(sD, cD, aD, lociCutoff = 0.9, nullCutoff = 0.9, subRegio
     
   #repD <- .convertSegToLoci(repD)
 
-  if(class(repD) == "lociData") {
+  if(inherits(repD, "lociData")) {
       repD@priorType = "NB"
       densityFunction(repD) <- nbinomDensity
       seglens(repD) <- width(repD@coordinates)
-  } else if(class(repD) == "methData") repD@priorType = "BB"    
+  } else if(inherits(repD, "methData")) repD@priorType = "BB"    
     
   replicates(repD) <- as.factor(rep(1, ncol(repD)))
   groups(repD) <- list(rep(1, ncol(repD)), rep(1, ncol(repD)))
@@ -504,12 +504,12 @@ classifySeg <- function(sD, cD, aD, lociCutoff = 0.9, nullCutoff = 0.9, subRegio
             nullCutoff <- 0.5
         } else {
             nullFilter <- .filterSegments(overNulls@coordinates, runif(nrow(overNulls)))              
-            if(class(overNulls) == "lociData") {
+            if(inherits(overNulls, "lociData")) {
                 fD <- getLikelihoods(cD = overNulls[nullFilter,], bootStraps = 1, 
                                      verbose = FALSE, 
                                      subset = NULL, priorSubset = NULL, pET = "BIC", 
                                      cl = cl)
-            } else if(class(overNulls) == "methData") {
+            } else if(inherits(overNulls, "methData")) {
                 fD <- getLikelihoods.BB(cD = overNulls[nullFilter,], bootStraps = 1, 
                                         verbose = FALSE, 
                                 subset = NULL, priorSubset = NULL, pET = "BIC", 
@@ -530,12 +530,12 @@ classifySeg <- function(sD, cD, aD, lociCutoff = 0.9, nullCutoff = 0.9, subRegio
                         
                         nullFilter <- which(is.na(lD) & nullTest)[subSel]
                         
-                        if(class(overNulls) == "lociData") {
+                        if(inherits(overNulls, "lociData")) {
                             fD <- getLikelihoods(cD = overNulls[nullFilter,], bootStraps = 1, 
                                                  verbose = FALSE, 
                                                  subset = NULL, priorSubset = NULL, pET = "none", prs = c(prs[1], 1 - prs[1]), 
                                                  cl = cl)
-                        } else if(class(overNulls) == "methData") {
+                        } else if(inherits(overNulls, "methData")) {
                                         #              fD <- getLikelihoods.BB(cD = overNulls[nullFilter,], bootStraps = 1, 
                                         #                                      verbose = FALSE, 
                                         #                                      subset = NULL, priorSubset = NULL, pET = "none", prs = c(prs[1], 1 - prs[1]), 

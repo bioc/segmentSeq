@@ -227,7 +227,7 @@ thresholdFinder <- function(method, aM, subset, minprop = 0.05, bootstrap = 100,
 
 .convertSegToLoci <- function(sD)
   {
-    if(class(sD) == "segData") {
+    if(inherits(sD, "segData")) {
       lD <- new("lociData",
                 data = matrix(ncol = ncol(sD), nrow = length(sD@coordinates)),
                 libsizes = sD@libsizes,
@@ -236,7 +236,7 @@ thresholdFinder <- function(method, aM, subset, minprop = 0.05, bootstrap = 100,
                 seglens = width(sD@coordinates))
       if(nrow(sD@data) > 0)
         lD@data <- sD@data
-    } else if (class(sD) == "segMeth")
+    } else if (inherits(sD, "segMeth"))
       {
         lD <- new("methData",
                   data = list(matrix(ncol = ncol(sD), nrow = length(sD@coordinates)),

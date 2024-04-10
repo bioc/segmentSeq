@@ -113,12 +113,12 @@ plotAverageProfile <- function(position, profiles, col, surrounding, ylim, add =
     redsamp <- lapply(samples, match, uus)
     redMD <- mD[overMD,uus]
     
-    if(class(mD) == "alignmentMeth") {      
+    if(inherits(mD, "alignmentMeth")) {      
       return(.averageMethylationRegions(redMD = redMD, subcoord = subcoord, redOvers = redOvers, position = position, samples = redsamp, lenMod = lenMod, cuts = cuts, surrounding = surrounding))
     } else {            
       chrwidths <- sapply(seqlevels(mD@alignments), function(chr) max(c(0, end(modcod[seqnames(modcod) == chr]))))
       
-      if(class(mD) == "alignmentData") {
+      if(inherits(mD, "alignmentData")) {
         RPKM <- t(t(getCounts(modcod, redMD, cl = NULL) / width(modcod)) / redMD@libsizes) * 1e9
         sampRPKM <- sapply(redsamp, function(samp) {
           rowMeans(RPKM[,samp,drop = FALSE])

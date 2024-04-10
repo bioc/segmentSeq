@@ -97,9 +97,9 @@
 
 .filterChunks <- function(aD, gap, filterProp)
   {
-    if(class(aD) == "alignmentData") {
+    if(inherits(aD, "alignmentData")) {
       filaD <- findChunks(aD@alignments, gap, checkDuplication = FALSE)      
-    } else if(class(aD) == "alignmentMeth") {
+    } else if(inherits(aD, "alignmentMeth")) {
       if(!missing(filterProp)) {
           filaD <- aD@alignments[which(rowSums(.methFunction(aD, prop = filterProp, locCutoff = NA), na.rm = TRUE) > 0),]        
       } else filaD <- aD[rowSums(aD@Cs) > 0,]
@@ -164,9 +164,9 @@ processAD <- function(aD, gap = 300, squeeze = 2, filterProp = 0.05, strandSplit
             windowChunks <- .windowing(cs)
             windata <- lapply(windowChunks, partCounts, cs = cs, cc = cc)
             
-            if(class(aD) == "alignmentData") {
+            if(inherits(aD, "alignmentData")) {
               data <- do.call("rbind", windata)
-            } else if(class(aD) == "alignmentMeth") {
+            } else if(inherits(aD, "alignmentMeth")) {
               Cs <- do.call("rbind", lapply(windata, function(x) x$Cs))
               Ts <- do.call("rbind", lapply(windata, function(x) x$Ts))
               rm(windata)
@@ -185,19 +185,19 @@ processAD <- function(aD, gap = 300, squeeze = 2, filterProp = 0.05, strandSplit
           cs <- GRanges()
           data <- Cs <- Ts <- matrix(nrow = 0, ncol = ncol(aD))
         }
-      if(class(aD) == "alignmentData") {
+      if(inherits(aD, "alignmentData")) {
         return(list(data = data, coordinates = cs))
-      } else if(class(aD) == "alignmentMeth") return(list(Cs = Cs, Ts = Ts, coordinates = cs))                                              
+      } else if(inherits(aD, "alignmentMeth")) return(list(Cs = Cs, Ts = Ts, coordinates = cs))                                              
     })
 
     coordinates <- do.call("c", lapply(chrDat, function(x) x$coordinates))
     values(coordinates) <- NULL
 
-    if(class(aD) == "alignmentData") {
+    if(inherits(aD, "alignmentData")) {
       data <- do.call("rbind", lapply(chrDat, function(x) x$data))
       tD <- new("lociData", coordinates = coordinates, data = data, libsizes = aD@libsizes, replicates = aD@replicates)
       colnames(tD@data) <- aD@libnames
-    } else if(class(aD) == "alignmentMeth") {
+    } else if(inherits(aD, "alignmentMeth")) {
       Cs <- do.call("rbind", lapply(chrDat, function(x) x$Cs))
       Ts <- do.call("rbind", lapply(chrDat, function(x) x$Ts))
       colnames(Cs) <- colnames(Ts) <- aD@libnames

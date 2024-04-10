@@ -4,8 +4,8 @@ Title: Methods for identifying small RNA loci from high-throughput
         sequencing data
 Version: 2.37.1
 Date: 2021-11-21
-Author: Thomas J. Hardcastle
-Maintainer: Thomas J. Hardcastle <tjh48@cam.ac.uk>
+Authors@R: c(person("Thomas J.", "Hardcastle", role = "aut"),
+  person("Samuel", "Granjeaud", role = "cre", email = "samuel.granjeaud@inserm.fr", comment=c(ORCID="0000-0001-9245-1535")))
 Description: High-throughput sequencing technologies allow the production of large volumes of short sequences, which can be aligned to the genome to create a set of matches to the genome. By looking for regions of the genome which to which there are high densities of matches, we can infer a segmentation of the genome into regions of biological significance. The methods in this package allow the simultaneous segmentation of data from multiple samples, taking into account replicate data, in order to create a consensus segmentation. This has obvious applications in a number of classes of sequencing experiments, particularly in the discovery of small RNA loci and novel mRNA transcriptome discovery.
 License: GPL-3
 LazyLoad: yes
@@ -15,3 +15,5 @@ Imports: Rsamtools, IRanges, GenomeInfoDb, graphics, grDevices, utils, abind
 biocViews: MultipleComparison, Sequencing, Alignment,
         DifferentialExpression, QualityControl, DataImport
 PackageStatus: Deprecated
+URL: https://github.com/samgg/segmentSeq
+BugReports: https://github.com/samgg/segmentSeq/issues

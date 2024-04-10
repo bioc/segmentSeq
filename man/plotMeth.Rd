@@ -12,7 +12,8 @@ genome. If a \code{\link{methData}} object is also supplied, loci of
 methylation will also be shown.
 }
 \usage{
-plotMeth(aM, loci, chr, limits, samples, showNumber = TRUE, rgb = c(1, 0, 0), angle = 45, cap, add = FALSE)
+plotMeth(aM, loci, chr, limits, samples, showNumber = TRUE, rgb = c(1, 0, 0),
+angle = 45, cap, add = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,7 +21,10 @@ plotMeth(aM, loci, chr, limits, samples, showNumber = TRUE, rgb = c(1, 0, 0), an
     An \code{\linkS4class{alignmentMeth}}.
   }
   \item{loci}{
-    %%     ~~Describe \code{loci} here~~
+    A \code{\linkS4class{lociData}} object (produced by the
+    \code{\link{heuristicSeg}} or \code{\link{classifySeg}} function and therefore) containing
+    appropriate annotation information. Can be omitted if this
+    annotation is not known/required.
   }
   \item{chr}{
     The name of the chromosome to be plotted. Should correspond to a

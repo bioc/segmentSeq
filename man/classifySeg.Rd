@@ -108,7 +108,8 @@ sD <- processAD(alignData, gap = 100, cl = NULL)
 
 # Use the classifySeg function on the segData object to produce a lociData object.
 
-pS <- classifySeg(aD = alignData, sD = sD, subRegion = data.frame(chr = ">Chr1", start = 1, end = 1e5), getLikes = TRUE, cl = NULL)
+pS <- classifySeg(aD = alignData, sD = sD, 
+subRegion = data.frame(chr = ">Chr1", start = 1, end = 1e5), getLikes = TRUE, cl = NULL)
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

@@ -10,7 +10,7 @@ at each locus.}
   'lociData' object described in the vignette 'segmentSeq: methods for
   detecting methylation loci and differential methylation'.}
 
-\usage{hSL}
+\usage{data(hSL)}
 \format{A 'lociData' object.}
 \source{See vignette.}
 

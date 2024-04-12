@@ -2,7 +2,7 @@ Package: segmentSeq
 Type: Package
 Title: Methods for identifying small RNA loci from high-throughput
         sequencing data
-Version: 2.37.2
+Version: 2.37.3
 Date: 2021-11-21
 Authors@R: c(person("Thomas J.", "Hardcastle", role = "aut"),
   person("Samuel", "Granjeaud", role = "cre", email = "samuel.granjeaud@inserm.fr", comment=c(ORCID="0000-0001-9245-1535")))
@@ -14,6 +14,5 @@ Suggests: BiocStyle, BiocGenerics
 Imports: Rsamtools, IRanges, GenomeInfoDb, graphics, grDevices, utils, abind
 biocViews: MultipleComparison, Sequencing, Alignment,
         DifferentialExpression, QualityControl, DataImport
-PackageStatus: Deprecated
 URL: https://github.com/samgg/segmentSeq
 BugReports: https://github.com/samgg/segmentSeq/issues

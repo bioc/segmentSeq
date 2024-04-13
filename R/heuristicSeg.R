@@ -70,6 +70,7 @@ heuristicSeg <- function(sD, aD, gap = 50, RKPM = 1000, prop, coverage = 1, locC
 
           if(is.character(splitSeg))
               splitSeg <- lapply(splitSeg, function(sdpfile) {
+                  sDP <- NULL
                   load(sdpfile)
                   return(sDP)
               })

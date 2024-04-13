@@ -15,7 +15,6 @@
   sequence, and the number of times that each sequence is observed.
 }
 
-\usage{data(SL)}
 \format{A set of tab-delimited files containing data from four
   sequencing experiments.}
 \source{In-house Illumina sequencing experiments}

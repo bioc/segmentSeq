@@ -1,0 +1,28 @@
+pkgVer <- function(pkg) {
+    if (!exists("meta") || is.null(meta)) meta <- packageDescription(pkg)
+    ver <- meta$Version
+    paste0('https://github.com/SamGG/segmentSeq/', pkg, ' - R package version ', ver)
+}
+
+c(
+    bibentry(bibtype="manual",
+        title = "Methods for identifying small RNA loci from high-throughput sequencing data",
+        author = personList(
+            as.person("Hardcastle, Thomas J")
+        ),
+        year = format(Sys.Date(), "%Y"),
+        url = "http://www.bioconductor.org/packages/segmentSeq",
+        note = pkgVer('segmentSeq'),
+        doi = '10.18129/B9.bioc.segmentSeq'
+    ),
+    bibentry(bibtype="article",
+        title = "Methods for discovering genomic loci exhibiting complex patterns of differential methylation",
+        author = personList(
+            as.person("Hardcastle, Thomas J")
+        ),
+        year = "18 September 2017",
+        journal = "BMC Bioinformatics",
+        doi = "10.1186/s12859-017-1836-0",
+        url = "https://doi.org/10.1186/s12859-017-1836-0"
+    )
+)

@@ -14,6 +14,7 @@ BiocStyle::latex()
 @ 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \maketitle
 
@@ -34,7 +35,7 @@ We begin by loading the \verb'segmentSeq' package.
 Note that because the experiments that \verb'segmentSeq' is designed to analyse are usually massive, we should use (if possible) parallel processing as implemented by the \verb'parallel' package. If using this approach, we need to begin by define a \textsl{cluster}. The following command will use eight processors on a single machine; see the help page for 'makeCluster' for more information. If we don't want to parallelise, we can proceed anyway with a \verb'NULL' cluster.
 
 <<results = hide, eval = TRUE>>=
-if(require("parallel")) 
+if(TRUE)  # set to FALSE if you don't want parallelisation
 {
     numCores <- min(8, detectCores())
     cl <- makeCluster(numCores)

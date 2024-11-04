@@ -1,0 +1,189 @@
+---
+title: "segmentSeq: methods for detecting methylation loci and differential methylation"
+author: Thomas J. Hardcastle
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+package: segmentSeq
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{segmentsSeq: Methylation locus identification}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+# Introduction
+
+This vignette introduces analysis methods for data from high-throughput sequencing of bisulphite treated DNA to detect cytosine methylation. The ``segmentSeq`` package was originally designed to detect siRNA loci [Hardcastle2011](#Hardcastle2011) and many of the methods developed for this can be used to detect loci of cytosine methylation from replicated (or unreplicated) sequencing data.
+
+
+# Preparation
+
+Preparation of the segmentSeq package proceeds as in siRNA analysis. We begin by loading the ``segmentSeq`` package.
+
+```{r }
+library(segmentSeq)
+```
+
+Note that because the experiments that ``segmentSeq`` is designed to analyse are usually massive, we should use (if possible) parallel processing as implemented by the ``parallel`` package. If using this approach, we need to begin by define a *cluster*. The following command will use eight processors on a single machine; see the help page for 'makeCluster' for more information. If we don't want to parallelise, we can proceed anyway with a ``NULL`` cluster. Results may be slightly different depending on whether or not a cluster is used owing to the non-deterministic elements of the method.
+
+```{r results='hide', eval = TRUE}
+if(FALSE) { # set to FALSE if you don't want parallelisation
+    numCores <- min(8, detectCores())
+    cl <- makeCluster(numCores)
+} else {
+    cl <- NULL
+}
+```
+
+The ``segmentSeq`` package is designed to read in output from the YAMA (Yet Another Methylome Aligner) program. This is a perl-based package using either bowtie or bowtie2 to align bisulphite treated reads (in an unbiased manner) to a reference and identify the number of times each cytosine is identified as methylated or unmethylated. Unlike most other aligners, YAMA does not require that reads that map to more than one location are discarded, instead it reports the number of alternate matches to the reference for each cytosine. This is then used by ``segmentSeq`` to weight the observed number of methylated/un-methylated cytosines at a location. The files used here have been compressed to save space.
+
+```{r }
+datadir <- system.file("extdata", package = "segmentSeq")
+files <- c(
+  "short_18B_C24_C24_trim.fastq_CG_methCalls.gz",
+  "short_Sample_17A_trimmed.fastq_CG_methCalls.gz",
+  "short_13_C24_col_trim.fastq_CG_methCalls.gz",
+  "short_Sample_28_trimmed.fastq_CG_methCalls.gz")
+
+mD <- readMeths(files = files, dir = datadir,
+libnames = c("A1", "A2", "B1", "B2"), replicates = c("A","A","B","B"),
+nonconversion = c(0.004777, 0.005903, 0.016514, 0.006134))
+```
+
+We can begin by plotting the distribution of methylation for these samples. The distribution can be plotted for each sample individually, or as an average across multiple samples. We can also subtract one distribution from another to visualise patterns of differential methylation on the genome.
+
+```{r fig = FALSE, height = 10, width = 12, fig.cap = "Distributions of methylation on the genome (first two million bases of chromosome 1)."}
+par(mfrow = c(2,1))
+dists <- plotMethDistribution(mD, main = "Distributions of methylation", chr = "Chr1")
+plotMethDistribution(mD,
+                     subtract = rowMeans(sapply(dists, function(x) x[,2])),
+                     main = "Differences between distributions", chr = "Chr1")
+```
+
+Next, we process this ``alignmentData`` object to produce a ``segData`` object. This ``segData`` object contains a set of potential segments on the genome defined by the start and end points of regions of overlapping alignments in the ``alignmentData`` object. It then evaluates the number of tags that hit in each of these segments.
+
+```{r }
+sD <- processAD(mD, cl = cl)
+```
+
+```{r echo = FALSE, results = 'hide'}
+if(nrow(sD) != 249271) stop("sD object is the wrong size (should have 249271 rows). Failure.")
+```
+
+We can now construct a segment map from these potential segments.
+
+
+# Segmentation by heuristic Bayesian methods
+
+A fast method of segmentation can be achieved by assuming a binomial distribution on the data with an uninformative beta prior, and identifying those potential segments which have a sufficiently large posterior likelihood that the proportion of methylation exceeds some critical value. This value can be determined by examining the data using the 'thresholdFinder' function, but expert knowledge is likely to provide a better guess as to where methylation becomes biologically significant.
+
+```{r }
+thresh = 0.2
+hS <- heuristicSeg(sD = sD, aD = mD, prop = thresh, cl = cl, gap = 100, getLikes = FALSE)
+hS
+```
+
+```{r echo = FALSE, results = 'hide'}
+if(nrow(hS) != 2955) stop("hS object is the wrong size (should have 2955 rows). Failure.")
+```
+
+Within a methylation locus, it is not uncommon to find completely unmethylated cytosines. If the coverage of these cytosines is too high, it is possible that these will cause the locus to be split into two or more fragments. The ``mergeMethSegs`` function can be used to overcome this splitting by merging loci with identical patterns of expression that are not separated by too great a gap. Merging in this manner is optional, but recommended.
+
+```{r }
+hS <- mergeMethSegs(hS, mD, gap = 5000, cl = cl)
+```
+
+We can then estimate posterior likelihoods on the defined loci by applying empirical Bayesian methods. These will not change the locus definition, but will assign likelihoods that the identified loci represent a true methylation locus in each replicate group.
+
+```{r eval = FALSE}
+hSL <- lociLikelihoods(hS, mD, cl = cl)
+```
+
+```{r echo = FALSE}
+data(hSL)
+```
+
+# Segmentation by empirical Bayesian Methods
+
+Classification of the potential segments can also be carried out using empirical Bayesian methods. These are extremely computationally intensive, but allow biological variation within replicates to be more accurately modelled, thus providing an improved identification of methylation loci.
+
+```{r , eval=FALSE, echo=TRUE}
+%eBS <- classifySeg(sD, hS, mD, cl = cl)
+```
+
+
+# Visualising loci
+
+By one of these methods, we finally acquire an annotated ``methData`` object, with the annotations describing the co-ordinates of each segment.
+
+We can use this ``methData`` object, in combination with the ``alignmentMeth`` object, to plot the segmented genome.
+
+```{r fig = FALSE, height = 10, width = 12, fig.caption = "Methylation and identified loci on the first ten thousand bases of chromosome 1."}
+plotMeth(mD, hSL, chr = "Chr1", limits = c(1, 50000), cap = 10)
+```
+
+
+# Differential Methylation analysis
+
+We can also examine the ``methData`` object for differentially methylated regions using the beta-binomial methods [Hardcastle:2013](#Hardcastle2013) implemented in ``baySeq``. We first define a group structure on the data.
+
+```{r }
+groups(hSL) <- list(NDE = c(1,1,1,1), DE = c("A", "A", "B", "B"))
+```
+
+The methObservables function pre-calculates a set of data to improve the speed of prior and posterior estimation (at some minor memory cost).
+
+```{r }
+hSL <- methObservables(hSL)
+```
+
+The density function used here is a composite of the beta-binomial and a binomial distribution that accounts for the reported non-conversion rates.
+```{r }
+densityFunction(hSL) <- bbNCDist
+```
+
+We can then determine a prior distribution on the parameters of the model for the data.
+```{r getPriors, eval=FALSE}
+hSL <- getPriors(hSL, cl = cl)
+```
+
+We can then find the posterior likelihoods of the models defined in the groups structure.
+
+```{r getLikelihoods, eval=FALSE}
+hSL <- getLikelihoods(hSL, cl = cl)
+```
+
+We can then retrieve the data for the top differentially methylated regions.
+
+```{r , eval=FALSE}
+topCounts(hSL, "DE")
+```
+
+Finally, to be a good citizen, we stop the cluster we started earlier:
+
+```{r stopCluster}
+if(!is.null(cl))
+    stopCluster(cl)
+```
+
+
+# Bibliography
+
+<a name="Hardcastle2011" />Thomas J. Hardcastle and Krystyna A. Kelly and David C. Baulcombe. *Identifying small RNA loci from high-throughput sequencing data.* Bioinformatics (2012).
+
+<a name="Hardcastle2013" />Thomas J. Hardcastle and Krystyna A. Kelly. *Empirical Bayesian analysis of paired high-throughput sequencing data with a beta-binomial distribution.* BMC Bioinformatics (2013).
+
+
+# Session Info
+
+```{r }
+sessionInfo()
+```
+

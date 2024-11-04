@@ -10,9 +10,14 @@ Description: High-throughput sequencing technologies allow the production of lar
 License: GPL-3
 LazyLoad: yes
 Depends: R (>= 3.0.0), methods, baySeq (>= 2.9.0), S4Vectors, parallel, GenomicRanges, ShortRead, stats
-Suggests: BiocStyle, BiocGenerics
+Suggests: 
+    BiocStyle,
+    BiocGenerics,
+    knitr,
+    rmarkdown
 Imports: Rsamtools, IRanges, GenomeInfoDb, graphics, grDevices, utils, abind
 biocViews: MultipleComparison, Sequencing, Alignment,
         DifferentialExpression, QualityControl, DataImport
 URL: https://github.com/samgg/segmentSeq
 BugReports: https://github.com/samgg/segmentSeq/issues
+VignetteBuilder: knitr
